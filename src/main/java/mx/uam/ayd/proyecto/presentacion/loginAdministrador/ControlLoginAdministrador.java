@@ -140,19 +140,32 @@ public class ControlLoginAdministrador {
         String usuario = txtUsuario.getText();
         String contrasena = txtContrasena.getText();
 
+        // 1. Validación de campos vacíos
         if (usuario == null || usuario.isBlank() || contrasena == null || contrasena.isEmpty()) {
             lblMensaje.setText("Ingresa tu usuario y contraseña.");
             return;
         }
 
-        if (servicioAutenticacion.autenticarAdministrador(usuario.trim(), contrasena)) {
+        try {
+            // 2. Llamamos al nuevo método general de autenticación (que programaremos en el siguiente paso)
+            // Este método lanzará excepciones si la cuenta está bloqueada o ya tiene sesión activa.
+            String rol = servicioAutenticacion.loginEmpleado(usuario.trim(), contrasena);
+            
             exito = true;
-            stage.close(); // al cerrarse, showAndWait() de muestra() termina y devuelve true
-        } else {
-            lblMensaje.setText("Credenciales incorrectas o sin permisos de administrador.");
+            
+            // Aquí delegaremos la redirección a la Subtarea 3 basándonos en la variable "rol"
+            System.out.println("Acceso concedido. Redirigiendo a panel de: " + rol);
+            
+            stage.close(); 
+            
+        } catch (IllegalArgumentException e) {
+            // 3. Capturamos los errores de negocio: 
+            // "Credenciales incorrectas", "Cuenta bloqueada temporalmente", "Sesión ya iniciada"
+            lblMensaje.setText(e.getMessage());
             txtContrasena.clear();
         }
     }
+
 
     /**
      * Se ejecuta al presionar "Cancelar". Solo cierra la ventana; como

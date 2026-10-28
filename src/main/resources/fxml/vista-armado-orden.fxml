@@ -45,7 +45,7 @@
                   <HBox VBox.vgrow="ALWAYS">
                      <children>
                         <!-- Botonera de Categorías -->
-                        <VBox prefWidth="100.0" spacing="20.0" style="-fx-background-color: #1A0F0F;">
+                        <VBox prefWidth="100.0" spacing="15.0" style="-fx-background-color: #1A0F0F;">
                            <padding>
                               <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
                            </padding>
@@ -55,14 +55,26 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Button>
+                              <Button mnemonicParsing="false" onAction="#filtrarRollosEspeciales" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #e8b1b1; -fx-text-fill: #1A0F0F;" text="Rollos esp." textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font name="System Bold" size="11.0" />
+                                 </font>
+                              </Button>
                               <Button mnemonicParsing="false" onAction="#filtrarPlancha" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #e8b1b1; -fx-text-fill: #1A0F0F;" text="Plancha">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
-                                 </font></Button>
+                                 </font>
+                              </Button>
                               <Button mnemonicParsing="false" onAction="#filtrarBebidas" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #e8b1b1; -fx-text-fill: #1A0F0F;" text="Bebidas">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
-                                 </font></Button>
+                                 </font>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#filtrarPostres" prefHeight="60.0" prefWidth="80.0" style="-fx-background-color: #e8b1b1; -fx-text-fill: #1A0F0F;" text="Postres">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Button>
                            </children>
                         </VBox>
                         

@@ -78,7 +78,7 @@
                         <Region layoutX="460.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox maxWidth="1.7976931348623157E308">
                      <children>
                         <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                         <Button mnemonicParsing="false" onAction="#onActionBtnHistorial" style="-fx-background-color: #2b2b2b; -fx-text-fill: white; -fx-background-radius: 6px; -fx-border-radius: 6px;" text="HISTORIAL DE PEDIDOS ENTREGADOS">

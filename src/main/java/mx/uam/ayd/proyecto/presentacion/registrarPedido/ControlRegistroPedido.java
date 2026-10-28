@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import mx.uam.ayd.proyecto.negocio.ServicioPedido;
 import mx.uam.ayd.proyecto.negocio.modelo.Pedido;
 import mx.uam.ayd.proyecto.presentacion.armadoOrden.VistaArmadoOrden;
+import mx.uam.ayd.proyecto.presentacion.historialPedidosEntregados.ControlHistorialPedidos;
 import mx.uam.ayd.proyecto.presentacion.visualizarOrden.ControlVisualizarOrden;
 import mx.uam.ayd.proyecto.presentacion.registrarMesa.ControlMesa;
 
@@ -49,6 +50,8 @@ public class ControlRegistroPedido {
     // Inyectamos el controlador de mesas para abrir el plano de sala nuevo
     @Autowired
     private ControlMesa controlMesa;
+    @Autowired
+    private ControlHistorialPedidos controlHistorialPedidos; // Se tiene contacto para pasar a la HU de la que se encarga
 
     // Inyectamos la nueva ventana de Armado de Orden
     @Autowired
@@ -276,6 +279,15 @@ public class ControlRegistroPedido {
         alerta.setContentText("El pedido no se ha podido marcar como entregado.");
         alerta.showAndWait();
         System.out.println("Se mostró el mensaje de error al ser entregado");
+    }
+    
+    /**
+     * Es la acción al presionar el botón para ir a la historia de usuario del historial de pedidos
+     * @author JLCB
+     */
+    public void onActionBtnHistorial(){
+        controlHistorialPedidos.inicia(); // Iniciamos al nuevo contro
+        cerrarVentana(); // Cerramos a este control
     }
     // FIN DE LA SECCIÓN
 

@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -59,12 +61,39 @@
                   <HBox prefHeight="100.0" prefWidth="200.0" spacing="7.0">
                      <children>
                         <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" onAction="#onConsumoLocalAction" prefHeight="160.0" prefWidth="160.0" style="-fx-background-color: #2b2b2b; -fx-text-fill: white;" text="CONSUMO LOCAL" />
+                        <Button mnemonicParsing="false" onAction="#onConsumoLocalAction" prefHeight="160.0" prefWidth="160.0" style="-fx-background-color: #2b2b2b; -fx-text-fill: white;" text="CONSUMO LOCAL">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Button>
                         <Region layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="60.0" HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" onAction="#onParaRecogerAction" prefHeight="160.0" prefWidth="160.0" style="-fx-background-color: #2b2b2b; -fx-text-fill: white;" text="PARA RECOGER" />
+                        <Button mnemonicParsing="false" onAction="#onParaRecogerAction" prefHeight="160.0" prefWidth="160.0" style="-fx-background-color: #2b2b2b; -fx-text-fill: white;" text="PARA RECOGER">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Button>
                         <Region maxHeight="1.7976931348623157E308" maxWidth="60.0" HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" onAction="#onDomicilioAction" prefHeight="160.0" prefWidth="160.0" style="-fx-background-color: #2b2b2b; -fx-text-fill: white;" text="A DOMICILIO" />
+                        <Button mnemonicParsing="false" onAction="#onDomicilioAction" prefHeight="160.0" prefWidth="160.0" style="-fx-background-color: #2b2b2b; -fx-text-fill: white;" text="A DOMICILIO">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Button>
                         <Region layoutX="460.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#onActionBtnHistorial" style="-fx-background-color: #2b2b2b; -fx-text-fill: white; -fx-background-radius: 6px; -fx-border-radius: 6px;" text="HISTORIAL DE PEDIDOS ENTREGADOS">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/icons/history_FF9999.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font>
+                        </Button>
+                        <Region layoutX="70.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />

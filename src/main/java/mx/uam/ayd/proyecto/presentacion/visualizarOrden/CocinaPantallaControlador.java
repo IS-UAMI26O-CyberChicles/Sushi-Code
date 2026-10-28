@@ -30,51 +30,30 @@ import mx.uam.ayd.proyecto.negocio.modelo.DetallesPedido;
 import mx.uam.ayd.proyecto.negocio.modelo.Pedido;
 import mx.uam.ayd.proyecto.negocio.modelo.Platillo;
 
-/**
- * CocinaPantallaControlador: El corazón visual de la cocina.
- * Este controlador maneja todo lo que el cocinero ve y hace en la pantalla:
- * cambiar entre estaciones (Rollos o Plancha), interactuar con los platillos
- * mediante checkboxes,
- * usar un teclado numérico en pantalla para buscar/finalizar órdenes, y
- * consultar el historial de completados.
- */
+// Controlador principal para la gestión visual de la pantalla de cocina, 
+// estaciones de trabajo, teclado numérico y control de comandas pendientes o completadas.
 @Component
-@Scope("prototype") // Spring crea una nueva instancia (un objeto totalmente nuevo) cada vez que el
-                    // bean es solicitado o inyectado en otra clase.
-
+@Scope("prototype") 
 public class CocinaPantallaControlador {
 
+    // Registrador de eventos y prefijo para el display numérico
     private static final Logger LOGGER = Logger.getLogger(CocinaPantallaControlador.class.getName());
     private static final String TXT_ORDEN_PREFIX = "Orden #";
 
-    // --- COMPONENTES DE LA VISTA (Inyectados desde FXML) ---
-    @FXML
-    private Label lblEstacion; // Etiqueta que muestra en qué estación estamos trabajando actualmente ("ROLLOS"
-                               // o "PLANCHA").
+    // Componentes de la interfaz de usuario inyectados desde FXML
+    @FXML private Label lblEstacion; 
+    @FXML private FlowPane containerPendientes; 
+    @FXML private Label txtOrdenInput; 
+    @FXML private Label lblTotalTerminados; 
+    @FXML private Label lblPlatillosPendientes; 
 
-    @FXML
-    private FlowPane containerPendientes; // Contenedor en forma de cuadrícula donde se dibujan las tarjetas con las
-                                          // órdenes pendientes.
-
-    @FXML
-    private Label txtOrdenInput; // Pantalla pequeña o texto donde se van acumulando los números que el cocinero
-                                 // tipea en el pad numérico.
-
-    @FXML
-    private Label lblTotalTerminados; // Etiqueta que muestra el total de ordenes terminadas
-
-    @FXML
-    private Label lblPlatillosPendientes; // Etiqueta que muestra el total de platillos por terminar de acuerdo a la
-                                          // estacion seleccionada
-
-    // Estado interno para saber qué área de la cocina está activa por defecto al
-    // arrancar.
+    // Estado interno para almacenar la estación de cocina activa por defecto
     private String estacionActual = "ROLLOS";
 
     // Lista para almacenar y controlar los temporizadores activos en las tarjetas
     private final List<ItemOrdenControlador> controladoresItems = new ArrayList<>();
 
-    // --- SERVICIOS Y REPOSITORIOS (Inyección de dependencias de Spring) ---
+    // Servicios y repositorios inyectados por Spring
     @Autowired
     private ServicioPedido servicioPedido;
 
@@ -85,10 +64,7 @@ public class CocinaPantallaControlador {
     @Lazy
     private ControlVisualizarOrden controlVisualizarOrden;
 
-    /**
-     * MÉTODO DE INICIALIZACIÓN:
-     * Se ejecuta automáticamente justo después de que JavaFX carga el archivo FXML.
-     */
+    // Método de inicialización automática al cargar el FXML
     @FXML
     public void initialize() {
         if (txtOrdenInput != null) {
@@ -97,8 +73,7 @@ public class CocinaPantallaControlador {
         actualizarVistaEstacion();
     }
 
-    // --- ACCIONES DE NAVEGACIÓN Y ESTACIÓN ---
-
+    // Acciones para alternar entre estaciones de cocina (Rollos / Plancha)
     @FXML
     private void handleCambiarEstacionRollos() {
         this.estacionActual = "ROLLOS";
@@ -117,11 +92,7 @@ public class CocinaPantallaControlador {
         }
     }
 
-    /**
-     * Despliega una ventana modal interactiva que muestra el historial y detalle de
-     * todas las órdenes completadas recientemente.
-     */
-
+    // Despliega una ventana modal interactiva con el historial de órdenes completadas
     @FXML
     private void handleMostrarCompletados() {
         Stage modalStage = new Stage();
@@ -161,7 +132,7 @@ public class CocinaPantallaControlador {
                 if (detalles != null) {
                     for (DetallesPedido d : detalles) {
                         if (d.getPlatillo() != null) {
-                            sb.append("• ").append(d.getCantidad()).append("x ").append(d.getPlatillo().getNombre())
+                            sb.append("\n").append(d.getCantidad()).append("x ").append(d.getPlatillo().getNombre())
                                     .append("\n");
                         }
                     }
@@ -194,10 +165,10 @@ public class CocinaPantallaControlador {
         modalStage.showAndWait();
     }
 
-    // Método para que el "Director" le diga qué estación cargar al abrirse
+    // Actualiza la estación actual en la interfaz gráfica
     public void setEstacionActual(String estacion) {
         this.estacionActual = estacion;
-        actualizarVistaEstacion(); // Actualiza el Label "ESTACIÓN: ROLLOS"[cite: 1]
+        actualizarVistaEstacion(); 
     }
 
     private void actualizarVistaEstacion() {
@@ -206,8 +177,7 @@ public class CocinaPantallaControlador {
         }
     }
 
-    // --- ACCIONES DEL TECLADO NUMÉRICO EN PANTALLA ---
-
+    // Acciones del teclado numérico en pantalla para búsqueda y finalización por número
     @FXML
     private void handleKeypadNumber(ActionEvent event) {
         Button btn = (Button) event.getSource();
@@ -251,31 +221,23 @@ public class CocinaPantallaControlador {
         }
     }
 
-    // --- MÉTODOS PARA RENDERIZAR Y FINALIZAR PEDIDOS ---
-
-    /**
-     * Finaliza de manera parcial o total los items de un pedido procesados desde
-     * una estacion de cocina
-     */
-
+    // Finaliza de manera parcial o total los items de un pedido procesados desde cocina
     public void finalizarOrden(Long idPedido, List<DetallesPedido> detallesTerminados) {
         try {
             Pedido pedido = servicioPedido.recuperaPedido(idPedido);
             if (pedido != null) {
                 boolean todoElPedidoEstaListo = true;
 
-                // 1. Iteramos sobre los detalles que ya están DENTRO del pedido para que
-                // el guardado en cascada funcione a nuestro favor.
+                // Itera sobre los detalles del pedido para actualizar su estado de completado
                 if (pedido.getDetallesPedido() != null) {
                     for (DetallesPedido detalleGlobal : pedido.getDetallesPedido()) {
 
-                        // 2. Comparamos por el ID exacto del detalle (más seguro que por nombre)
+                        // Compara utilizando el método corregido getIdDetallePedido()
                         boolean esDeEstaEstacion = detallesTerminados.stream()
-                                .anyMatch(d -> d.getIdDetallesPedido() == detalleGlobal.getIdDetallesPedido());
+                                .anyMatch(d -> d.getIdDetallePedido() == detalleGlobal.getIdDetallePedido());
 
                         if (esDeEstaEstacion) {
                             detalleGlobal.setCompletado(true);
-                            // Ya no llamamos a servicioOrden.actualizarDetalle(), Hibernate lo hará solo.
                         }
 
                         if (!detalleGlobal.isCompletado()) {
@@ -284,20 +246,14 @@ public class CocinaPantallaControlador {
                     }
                 }
 
-                // Solo marcamos el pedido como completado si ya no hay platillos pendientes en
-                // ninguna estación
+                // Marca el pedido como completado si ya no hay platillos pendientes en ninguna estación
                 if (todoElPedidoEstaListo) {
                     pedido.setEstado("Completado");
                 }
 
-                // 3. Al guardar el pedido, Hibernate detecta los DetallesPedido modificados
-                // y los actualiza gracias al CascadeType.ALL
+                // Guarda el pedido y actualiza la vista
                 servicioPedido.guardarPedido(pedido);
 
-                // 4. Actualizamos la interfaz SIEMPRE (lo sacamos del
-                // 'if(todoElPedidoEstaListo)')
-                // para que los contadores visuales se sincronicen de inmediato en todas las
-                // pantallas
                 if (controlVisualizarOrden != null) {
                     controlVisualizarOrden.cargarPedidosPendientes();
                 }
@@ -307,13 +263,7 @@ public class CocinaPantallaControlador {
         }
     }
 
-    /**
-     * Recibe la lista general de pedidos pendientes, filtra los elementos
-     * correspondientes a la estacion actual
-     * y genera dinamicamente las tarjetas visuales (comandas) en pantalla,
-     * actualizando los contadores de cola
-     */
-
+    // Recibe la lista general de pedidos pendientes, filtra por la estación actual y genera las tarjetas
     public void mostrarPedidosPendientes(List<Pedido> pedidos) {
         if (containerPendientes == null)
             return;
@@ -329,7 +279,6 @@ public class CocinaPantallaControlador {
             List<DetallesPedido> detalles = servicioOrden.obtenerDetallesDePedido(pedido.getIdPedido());
             List<DetallesPedido> detallesEstacion = new ArrayList<>();
 
-            // Bandera para saber si esta estación en específico ya terminó su trabajo
             boolean faltanPlatillosEnEstaEstacion = false;
 
             if (detalles != null) {
@@ -342,14 +291,13 @@ public class CocinaPantallaControlador {
 
                         if (!detalle.isCompletado()) {
                             platillosEnCola += detalle.getCantidad();
-                            faltanPlatillosEnEstaEstacion = true; // Detectamos que aún hay trabajo
+                            faltanPlatillosEnEstaEstacion = true; 
                         }
                     }
                 }
             }
 
-            // SOLO mostramos la tarjeta si hay platillos asignados a la estación Y al menos
-            // uno sigue pendiente
+            // Muestra la tarjeta únicamente si hay platillos asignados y al menos uno sigue pendiente
             if (!detallesEstacion.isEmpty() && faltanPlatillosEnEstaEstacion) {
                 crearTarjetaDesdeFXML(pedido.getIdPedido(), String.valueOf(pedido.getNumeroOrden()), detallesEstacion);
             }
@@ -377,12 +325,7 @@ public class CocinaPantallaControlador {
         }
     }
 
-    /**
-     * Carga dinmicamente el archivo FXML correspondiente a una tarjeta individual
-     * de orden,
-     * inyecta sus datos y la anade al contenedor principal de la vista de cocina
-     */
-
+    // Carga dinámicamente el archivo FXML para la tarjeta individual de orden y la añade al contenedor
     private void crearTarjetaDesdeFXML(Long idPedido, String numeroOrden, List<DetallesPedido> detallesEstacion) {
         try {
             java.net.URL url = getClass().getResource("/fxml/item-pedido.fxml");
@@ -396,12 +339,11 @@ public class CocinaPantallaControlador {
             Node tarjetaNode = loader.load();
             ItemOrdenControlador itemControlador = loader.getController();
             itemControlador.setDatos(idPedido, numeroOrden, detallesEstacion, this);
-            controladoresItems.add(itemControlador); // Guardamos ref para detener timers luego
+            controladoresItems.add(itemControlador); 
             containerPendientes.getChildren().add(tarjetaNode);
         } catch (IOException e) {
             LOGGER.severe("Error cargando ItemOrden.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -30,19 +31,19 @@ import mx.uam.ayd.proyecto.presentacion.cancelarOrden.ControlCancelarOrden;
 import mx.uam.ayd.proyecto.presentacion.principal.ControlPrincipal;
 import mx.uam.ayd.proyecto.presentacion.visualizarOrden.ControlVisualizarOrden;
 
-@Component  // EVITA HACER EL NEW
+// Componente controlador para la gestión de envío de órdenes a cocina y detalles de envío
+@Component 
 public class ControlEnviarOrdenCocina {
 
-    // CAPA DE NEGOCIO Y SERVICIOS INYECTADOS
-
-    @Autowired // AUTOCABLEADO
+    // Capa de negocio y servicios inyectados mediante Spring
+    @Autowired 
     private ServicioPedido servicioPedido;
 
     @Autowired
     private ServicioOrden servicioOrden;
 
     @Autowired
-    @Lazy // CREA EL CONTROLADOR HASTA QUE ES NECESARIO
+    @Lazy 
     private ControlPrincipal controlPrincipal; 
 
     @Autowired
@@ -60,8 +61,7 @@ public class ControlEnviarOrdenCocina {
     @Lazy
     private VistaArmadoOrden vistaArmadoOrden;
 
-    // COMPONENTES DE LA INTERFAZ DE USUARIO (FXML) 
-    
+    // Componentes de la interfaz de usuario (FXML) 
     @FXML private Button btnCancelarOrden;
     @FXML private Button btnVolver;
     @FXML private Label lblCliente;
@@ -76,32 +76,29 @@ public class ControlEnviarOrdenCocina {
     @FXML private TableColumn<DetallesPedido, String> colProducto;
     @FXML private TableColumn<DetallesPedido, Integer> colCantidad;
     @FXML private TableColumn<DetallesPedido, Integer> colPrecio;
-    @FXML private TableColumn<DetallesPedido, Integer> colSubtotal;
+    @FXML private TableColumn<DetallesPedido, Double> colSubtotal; // Actualizado a Double para coincidir con el modelo
     @FXML private Button btnEnviarCocina;
 
-    // COMPONENTES NUEVOS PARA EL ENVÍO A DOMICILIO
-
+    // Componentes para el envío a domicilio
     @FXML private TitledPane paneDetallesEnvio;
     @FXML private VBox boxCostoEnvio;
     @FXML private TextField txtCostoEnvio;
     @FXML private Label lblDireccion;
     @FXML private Label lblTelefono;
 
-    // ATRIBUTOS DE ESTADO
+    // Atributos de estado del controlador
     private double totalBase = 0.0;
     private long idPedidoActual;
     private Pedido pedidoActual;
 
-    // MÉTODO DE INICIALIZACIÓN DE LA INTERFAZ
-
+    // Método de inicialización de la interfaz gráfica
     @FXML
     public void initialize() {
         configurarColumnas();
         configurarListenerEnvio(); 
     }
 
-    // EL METODO DICE COMO LEER LOS DATOS DE LA ENTIDAD DETALLESPEDIDO
-    // DE DETALLESPEDIDO A PLATILLO
+    // Configura la forma en que se leen los datos de la entidad DetallesPedido hacia las columnas de la tabla
     private void configurarColumnas() {
         if (colCategoria != null) {
             colCategoria.setCellValueFactory(cellData -> 
@@ -122,13 +119,14 @@ public class ControlEnviarOrdenCocina {
                 new SimpleIntegerProperty(cellData.getValue().getPlatillo() != null ? 
                     cellData.getValue().getPlatillo().getPrecio() : 0).asObject());
         }
+        // Utiliza SimpleDoubleProperty para el manejo correcto del subtotal decimal
         if (colSubtotal != null) {
             colSubtotal.setCellValueFactory(cellData -> 
-                new SimpleIntegerProperty(cellData.getValue().getSubtotal()).asObject());
+                new SimpleDoubleProperty(cellData.getValue().getSubtotal()).asObject());
         }
     }
 
-    // FILTRA CARACTERES (SOLO NÚMEROS Y PUNTO DECIMAL) Y SUMA AL INSTANTE
+    // Filtra caracteres (solo números y punto decimal) y actualiza el total al instante
     private void configurarListenerEnvio() {
         if (txtCostoEnvio != null) {
             txtCostoEnvio.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -141,7 +139,7 @@ public class ControlEnviarOrdenCocina {
         }
     }
 
-    // REALIZA LA SUMA MATEMÁTICA Y ACTUALIZA LA ETIQUETA DEL TOTAL
+    // Realiza la suma matemática del costo de envío y actualiza la etiqueta del total
     private void actualizarTotalConEnvio() {
         double costoEnvio = 0.0;
         try {
@@ -157,7 +155,7 @@ public class ControlEnviarOrdenCocina {
         }
     }
     
-    // INICIA Y DESPLIEGA LA VENTANA PASANDO EL OBJETO PEDIDO COMPLETO
+    // Inicia y despliega la ventana pasando el objeto pedido completo
     public void inicia(Pedido pedido) {
         this.pedidoActual = pedido;
         if (pedido != null) {
@@ -167,7 +165,7 @@ public class ControlEnviarOrdenCocina {
         poblarDatosPedido();
     }
 
-    // INICIA Y DESPLIEGA LA VENTANA DE ENVÍO A COCINA CON EL ID DEL PEDIDO
+    // Inicia y despliega la ventana de envío a cocina utilizando el ID del pedido
     public void inicia(long idPedido) {
         this.idPedidoActual = idPedido;
         ventana.muestra();
@@ -179,7 +177,7 @@ public class ControlEnviarOrdenCocina {
         }
     }
 
-    // CARGA LA INTERFAZ CON LOS DATOS DEL PEDIDO Y DETALLES
+    // Carga la interfaz con los datos generales del pedido, cálculo de IVA y detalles
     private void poblarDatosPedido() {
         if (pedidoActual != null) {
             List<DetallesPedido> detalles = servicioOrden.obtenerDetallesDePedido(pedidoActual.getIdPedido());
@@ -192,7 +190,8 @@ public class ControlEnviarOrdenCocina {
             if (lblEstado != null) {
                 lblEstado.setText(pedidoActual.getEstado() != null ? pedidoActual.getEstado() : "Pendiente de envío");
             }
-            // CALCULA EL IVA
+            
+            // Cálculo de subtotales e IVA
             double total = servicioOrden.calcularSubtotalTotal(pedidoActual.getIdPedido());
             this.totalBase = total;
             double subtotal = total / 1.16;
@@ -202,7 +201,7 @@ public class ControlEnviarOrdenCocina {
             if (lblIva != null) lblIva.setText(String.format("IVA: $%.2f", iva));
             if (lblTotal != null) lblTotal.setText(String.format("TOTAL: $%.2f", total));
 
-            //LÓGICA PARA OCULTAR O MOSTRAR SECCIONES SEGÚN TIPO DE ORDEN 
+            // Lógica para ocultar o mostrar secciones según el tipo de orden (Domicilio / Local)
             boolean esAdomicilio = pedidoActual.getTipoOrden() != null && 
                                    pedidoActual.getTipoOrden().equalsIgnoreCase("Domicilio");
             
@@ -215,57 +214,59 @@ public class ControlEnviarOrdenCocina {
                 boxCostoEnvio.setManaged(esAdomicilio);
             }
             
-            // SI ES A DOMICILIO Y HAY UN CLIENTE ASIGNADO, INYECTA SU DIRECCIÓN Y TELÉFONO
+            // Si es a domicilio y cuenta con cliente asignado, inyecta su dirección y teléfono
             if (esAdomicilio && pedidoActual.getCliente() != null) {
                 if (lblDireccion != null) lblDireccion.setText(pedidoActual.getCliente().getDireccion());
                 if (lblTelefono != null) lblTelefono.setText(pedidoActual.getCliente().getTelefono());
             }
 
-            // SE INYECTA LA LISTA DE PLATILLOS ALA TABLA
+            // Inyecta la lista de platillos a la tabla de la vista
             if (tablaDetalle != null && detalles != null) {
                 tablaDetalle.setItems(FXCollections.observableArrayList(detalles));
                 tablaDetalle.refresh();
             }
         }
     }
-    // MANEJA EL EVENTO DE ENVÍO A COCINA, VALIDANDO QUE HAYA PLATILLOS Y QUE EL COSTO DE ENVÍO SEA VÁLIDO
+
+    // Maneja el evento de envío a cocina, validando que haya platillos y costo de envío requerido
     @FXML
     void clickBotonEnviar(ActionEvent event) {
-        // VALIDACIÓN: evita enviar una orden vacía
+        // Validación: Evita enviar una orden vacía
         if (tablaDetalle == null || tablaDetalle.getItems().isEmpty()) {
             mostrarMensajeError("Orden Vacía", "No se puede enviar una orden sin platillos a la cocina.");
             return;
         }
 
-        // VALIDACIÓN HU-15: Costo de envío obligatorio para pedidos a domicilio 
-    boolean esAdomicilio = pedidoActual != null && 
-                           pedidoActual.getTipoOrden() != null && 
-                           pedidoActual.getTipoOrden().equalsIgnoreCase("Domicilio");
+        // Validación HU-15: Costo de envío obligatorio para pedidos a domicilio 
+        boolean esAdomicilio = pedidoActual != null && 
+                               pedidoActual.getTipoOrden() != null && 
+                               pedidoActual.getTipoOrden().equalsIgnoreCase("Domicilio");
 
-    if (esAdomicilio) {
-        String textoCosto = (txtCostoEnvio != null && txtCostoEnvio.getText() != null) 
-                            ? txtCostoEnvio.getText().trim() : "";
-        
-        if (textoCosto.isEmpty()) {
-            mostrarMensajeError("Costo de Envío Requerido", 
-                "Esta orden es a domicilio. Por favor, ingresa el costo de envío antes de enviar a cocina.");
-            return;
+        if (esAdomicilio) {
+            String textoCosto = (txtCostoEnvio != null && txtCostoEnvio.getText() != null) 
+                                ? txtCostoEnvio.getText().trim() : "";
+            
+            if (textoCosto.isEmpty()) {
+                mostrarMensajeError("Costo de Envío Requerido", 
+                    "Esta orden es a domicilio. Por favor, ingresa el costo de envío antes de enviar a cocina.");
+                return;
+            }
         }
-    }
+        
         try {
             double costo = 0.0;
             if (txtCostoEnvio != null && txtCostoEnvio.getText() != null && !txtCostoEnvio.getText().isEmpty()) {
                 costo = Double.parseDouble(txtCostoEnvio.getText());
             }
 
-            boolean exito = servicioPedido.procesarEnvioCocina(idPedidoActual , costo);
+            boolean exito = servicioPedido.procesarEnvioCocina(idPedidoActual, costo);
             
             if (exito) {
                 if (lblEstado != null) {
                     lblEstado.setText("En Preparación");
                 }
                 
-                // ABRE Y ACTUALIZA LA VISTA DE COCINA 
+                // Abre y actualiza la vista de cocina tras el envío exitoso
                 if (controlVisualizarOrden != null) {
                     controlVisualizarOrden.inicia();
                 }
@@ -277,7 +278,6 @@ public class ControlEnviarOrdenCocina {
                     stage.close();
                 }
             }
-            // SI EL PEDIDO NO EXISTE O YA ESTA EN PREPARACION
         } catch (IllegalArgumentException e) {
             mostrarMensajeError("No se encontró el pedido", e.getMessage());
         } catch (IllegalStateException e) {
@@ -285,7 +285,7 @@ public class ControlEnviarOrdenCocina {
         }
     }
 
-    // VENTANAS DE EXITO Y ERROR PARA INFORMAR AL USUARIO SOBRE EL ESTADO DE LA OPERACIÓN
+    // Despliega ventanas de éxito para informar al usuario sobre la operación
     private void mostrarMensajeExito() {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Éxito");
@@ -294,6 +294,7 @@ public class ControlEnviarOrdenCocina {
         alert.showAndWait();
     }
 
+    // Despliega ventanas de error para notificar incidencias
     private void mostrarMensajeError(String titulo, String mensaje) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(titulo);
@@ -302,7 +303,7 @@ public class ControlEnviarOrdenCocina {
         alert.showAndWait();
     }
 
-     //LIMPIA LA INERFAZ , CAMBIA ESTADO Y LIMPIA TABLA     
+    // Limpia la interfaz, cambia el estado y vacía la tabla tras una cancelación
     public void limpiarVistaDespuesDeCancelar() {
         if (lblEstado != null) {
             lblEstado.setText("Cancelada");
@@ -325,35 +326,34 @@ public class ControlEnviarOrdenCocina {
         }
     }
 
-    // ABRE LA NETANA DE CANCELAR
+    // Abre la ventana de cancelación de la orden actual
     @FXML
     public void clickBotonCancelarOrden(ActionEvent event) {
-        
         controlPrincipal.iniciaVentanaCancelarOrden();
         controlCancelarOrden.inicia(idPedidoActual);
     }
 
-    // REGRESA A LA VENTANA DE MENÚ / ARMADO DE ORDEN RETENIENDO LA INFORMACIÓN
+    // Regresa a la ventana de armado de orden reteniendo la información actual
     @FXML
     public void clickBotonVolver(ActionEvent event) {
-
         if (vistaArmadoOrden != null && pedidoActual != null) {
             vistaArmadoOrden.muestra(pedidoActual);
         }
         cerrar();
     }
 
-    // CIERRA LA VENTANA DE ENVIO A COCINA
-public void cerrar() {
-    if (btnCancelarOrden != null && btnCancelarOrden.getScene() != null) {
-        javafx.stage.Stage stage = (javafx.stage.Stage) btnCancelarOrden.getScene().getWindow();
-        stage.close();
-    } else if (btnVolver != null && btnVolver.getScene() != null) {
-        javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
-        stage.close();
+    // Cierra la ventana actual de envío a cocina
+    public void cerrar() {
+        if (btnCancelarOrden != null && btnCancelarOrden.getScene() != null) {
+            javafx.stage.Stage stage = (javafx.stage.Stage) btnCancelarOrden.getScene().getWindow();
+            stage.close();
+        } else if (btnVolver != null && btnVolver.getScene() != null) {
+            javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
+            stage.close();
+        }
     }
-}
-    // MÉTODO QUE SE INVOCA AL CANCELAR PARA CERRAR LA VENTANA DEL TICKET ANTERIOR
+
+    // Método que se invoca al cancelar para cerrar por completo las ventanas relacionadas
     public void cerrarTodoPorCancelacion() {
         cerrar();
 

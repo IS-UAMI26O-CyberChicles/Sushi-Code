@@ -80,4 +80,15 @@ public class Cobro {
     public void setCambio(int cambio) {
         this.cambio = cambio;
     }
+
+    
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
 }

@@ -1,5 +1,7 @@
 package mx.uam.ayd.proyecto.presentacion.enviarOrdenCocina;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +17,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 
 import mx.uam.ayd.proyecto.negocio.ServicioOrden;
 import mx.uam.ayd.proyecto.negocio.ServicioPedido;
+import mx.uam.ayd.proyecto.negocio.modelo.Cobro;
 import mx.uam.ayd.proyecto.negocio.modelo.DetallesPedido;
 import mx.uam.ayd.proyecto.negocio.modelo.Pedido;
 import mx.uam.ayd.proyecto.presentacion.armadoOrden.VistaArmadoOrden;
@@ -79,25 +84,40 @@ public class ControlEnviarOrdenCocina {
     @FXML private TableColumn<DetallesPedido, Integer> colSubtotal;
     @FXML private Button btnEnviarCocina;
 
-    // COMPONENTES NUEVOS PARA EL ENVÍO A DOMICILIO
+    // COMPONENTES NUEVOS PARA EL ENVÍO A DOMICILIO Y PAGO
 
     @FXML private TitledPane paneDetallesEnvio;
     @FXML private VBox boxCostoEnvio;
     @FXML private TextField txtCostoEnvio;
     @FXML private Label lblDireccion;
     @FXML private Label lblTelefono;
+    @FXML private RadioButton rbPendiente;
+    @FXML private RadioButton rbTarjeta;
+    @FXML private RadioButton rbEfectivo;
 
     // ATRIBUTOS DE ESTADO
     private double totalBase = 0.0;
     private long idPedidoActual;
     private Pedido pedidoActual;
+    //para asegurar selección única
+    private ToggleGroup grupoPago;
 
     // MÉTODO DE INICIALIZACIÓN DE LA INTERFAZ
 
     @FXML
     public void initialize() {
         configurarColumnas();
-        configurarListenerEnvio(); 
+        configurarListenerEnvio();
+        configurarGrupoPago();
+    }
+
+    private void configurarGrupoPago() {
+        if (rbPendiente != null && rbTarjeta != null && rbEfectivo != null) {
+            grupoPago = new ToggleGroup();
+            rbPendiente.setToggleGroup(grupoPago);
+            rbTarjeta.setToggleGroup(grupoPago);
+            rbEfectivo.setToggleGroup(grupoPago);
+        }
     }
 
     // EL METODO DICE COMO LEER LOS DATOS DE LA ENTIDAD DETALLESPEDIDO
@@ -256,6 +276,32 @@ public class ControlEnviarOrdenCocina {
             double costo = 0.0;
             if (txtCostoEnvio != null && txtCostoEnvio.getText() != null && !txtCostoEnvio.getText().isEmpty()) {
                 costo = Double.parseDouble(txtCostoEnvio.getText());
+            }
+
+            // REGISTRA EL COBRO SEGÚN EL MÉTODO DE PAGO SELECCIONADO
+            if (pedidoActual != null) {
+                pedidoActual.getCobros().clear(); // Limpia cobros anteriores para evitar duplicados
+
+                if (rbTarjeta != null && rbTarjeta.isSelected()) {
+                    Cobro cobro = new Cobro();
+                    cobro.setPagoTotal((int) Math.round(totalBase + costo));
+                    cobro.setMetodoPago("Tarjeta");
+                    cobro.setFecha(new Date(System.currentTimeMillis()));
+                    cobro.setHora(new Time(System.currentTimeMillis()));
+                    cobro.setPedido(pedidoActual);
+
+                    pedidoActual.agregarCobro(cobro);
+                } else if (rbEfectivo != null && rbEfectivo.isSelected()) {
+                    Cobro cobro = new Cobro();
+                    cobro.setPagoTotal((int) Math.round(totalBase + costo));
+                    cobro.setMetodoPago("Efectivo");
+                    cobro.setFecha(new Date(System.currentTimeMillis()));
+                    cobro.setHora(new Time(System.currentTimeMillis()));
+                    cobro.setPedido(pedidoActual);
+
+                    pedidoActual.agregarCobro(cobro);
+                }
+                // Si rbPendiente está seleccionado, la lista de cobros queda vacía y esPagado() devolverá false
             }
 
             boolean exito = servicioPedido.procesarEnvioCocina(idPedidoActual , costo);

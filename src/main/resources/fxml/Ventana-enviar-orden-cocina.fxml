@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -68,7 +69,7 @@
                                     </content>
                                 </TitledPane>
 
-                                <!-- NUEVO: TitledPane para Detalles de Envío con fx:id para controlar su visibilidad -->
+                                <!-- TitledPane para Detalles de Envío -->
                                 <TitledPane fx:id="paneDetallesEnvio" expanded="true" style="-fx-text-fill: white;" text="Detalles de Envío (A Domicilio)" HBox.hgrow="ALWAYS">
                                     <content>
                                         <VBox spacing="8" style="-fx-background-color: #26181a;">
@@ -114,7 +115,7 @@
                                         
                                         <Separator style="-fx-opacity: 0.3;" />
 
-                                        <!-- NUEVO: Sección de Costo de Envío con fx:id para controlar su visibilidad -->
+                                        <!-- Sección de Costo de Envío -->
                                         <VBox fx:id="boxCostoEnvio" spacing="5">
                                             <children>
                                                 <Label style="-fx-text-fill: white;" text="Costo de Envío (Distancia)" />
@@ -127,6 +128,18 @@
                                                         <TextField fx:id="txtCostoEnvio" promptText="0.00" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-prompt-text-fill: #666666;" HBox.hgrow="ALWAYS" />
                                                     </children>
                                                 </HBox>
+                                            </children>
+                                        </VBox>
+
+                                        <Separator style="-fx-opacity: 0.3;" />
+
+                                        <!-- Selector Estado de Pago con RadioButtons -->
+                                        <VBox spacing="8">
+                                            <children>
+                                                <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="Estado de Pago:" />
+                                                <RadioButton fx:id="rbPendiente" selected="true" style="-fx-text-fill: #cccccc; -fx-cursor: hand;" text="Pendiente (Cobrar al entregar)" />
+                                                <RadioButton fx:id="rbTarjeta" style="-fx-text-fill: #cccccc; -fx-cursor: hand;" text="Pago con Tarjeta" />
+                                                <RadioButton fx:id="rbEfectivo" style="-fx-text-fill: #cccccc; -fx-cursor: hand;" text="Pago (Efectivo en caja)" />
                                             </children>
                                         </VBox>
 

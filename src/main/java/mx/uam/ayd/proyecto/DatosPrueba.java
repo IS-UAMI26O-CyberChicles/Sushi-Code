@@ -35,16 +35,13 @@ public class DatosPrueba implements CommandLineRunner {
     private DetallesPedidoRepository detallesPedidoRepository;
     @Autowired
     private ClienteRepository clienteRepository;
-
     @Autowired
     private MesaRepository mesaRepository;
-
     @Autowired
     private EmpleadoRepository empleadoRepository;
 
     @Override
     public void run(String... args) throws Exception {
-        // Se declaran las variables para utilizar el mismo nombre y no tener problema en caso de que se hayan inicializadoo o no en el primer if
         Platillo p1 = null;
         Platillo p2 = null;
         Platillo p3 = null;
@@ -93,9 +90,20 @@ public class DatosPrueba implements CommandLineRunner {
             System.out.println("¡Carga de platillos completada!");
         }
 
-        // Fabricación artificial de pedidos activos
+        // Carga de empleados de prueba (Tu rama CYB-3)
+        if (empleadoRepository.count() == 0) {
+            System.out.println("Iniciando carga de empleados de prueba en H2...");
+
+            empleadoRepository.save(new Empleado("Daiki Nakamura", "daiki.n", "ClaveSegura1!", "Cocinero"));
+            empleadoRepository.save(new Empleado("Aoi Tanaka", "aoi.tanaka", "ClaveSegura1!", "Administrador"));
+            empleadoRepository.save(new Empleado("Ren Takahashi", "ren.t", "ClaveSegura1!", "Recepcionista"));
+            empleadoRepository.save(new Empleado("Haruto Sato", "haruto.s", "ClaveSegura1!", "Repartidor"));
+
+            System.out.println("¡Carga de empleados completada!");
+        }
+
+        // Fabricación artificial de pedidos activos (Rama master)
         if(pedidoRepository.count() == 0){
-            // Si por alguna razón no se crearon los platillos, se vuelven a intentar aquí y nos aseguramos de tener sus nombres de variable para facilitarse
             if(platilloRepository.count() == 0){
                 p1 = new Platillo("Rollos de Mar y Tierra", 120, "Rollos", "Rollo empanizado con camarón, res y aguacate.");
                 platilloRepository.save(p1);
@@ -107,7 +115,6 @@ public class DatosPrueba implements CommandLineRunner {
                 platilloRepository.save(p4);
             }
 
-            // Creamos y guardamos clientes
             Cliente c1 = new Cliente("Alberto", "124567891", "Dirección 1");
             Cliente c2 = new Cliente("Julio", "0321654987", "Dirección 2");
             clienteRepository.save(c1);
@@ -120,8 +127,8 @@ public class DatosPrueba implements CommandLineRunner {
             Pedido pedido4 = new Pedido("Domicilio", 12348, 'c', "Servicios", "Completado", null, 300);
             Pedido pedido5 = new Pedido("Domicilio", 12349, 'a', "Cocina", "En Proceso", null, 400);
             Pedido pedido6 = new Pedido("Recoger", 12350, 'b', "Servicios", "Cancelado", null, 200);
+
             
-            // Damos clientes a los pedidos
             pedido1.setCliente(c1);
             pedido2.setCliente(c2);
             pedido3.setCliente(c1);
@@ -129,7 +136,6 @@ public class DatosPrueba implements CommandLineRunner {
             pedido5.setCliente(c1);
             pedido6.setCliente(c2);
 
-            // Guardamos al pedido en el repositorio y sacamoos la variable para tener el ID 
             pedido1 = pedidoRepository.save(pedido1);
             pedido2 = pedidoRepository.save(pedido2);
             pedido3 = pedidoRepository.save(pedido3);
@@ -137,7 +143,6 @@ public class DatosPrueba implements CommandLineRunner {
             pedido5 = pedidoRepository.save(pedido5);
             pedido6 = pedidoRepository.save(pedido6);
 
-            // Creamos los detalles, los agregamos a una List t los agregamos a los pedidos
             DetallesPedido det1 = new DetallesPedido(2, "Nota 1. Prueba de impresión", 100, p1, pedido1);
             det1 = detallesPedidoRepository.save(det1);
             DetallesPedido det2 = new DetallesPedido(2, "nota", 100, p3, pedido1);
@@ -189,7 +194,6 @@ public class DatosPrueba implements CommandLineRunner {
             detalles6.add(det11);
             pedido6.setDetallesPedido(detalles6);
 
-            // Se actualiza pedido en el repositorio ya con los detalles
             pedido1 = pedidoRepository.save(pedido1);
             pedido2 = pedidoRepository.save(pedido2);
             pedido3 = pedidoRepository.save(pedido3);
@@ -224,5 +228,6 @@ public class DatosPrueba implements CommandLineRunner {
 
             System.out.println("¡Carga de empleados completada!");
         }
+
     }
 }

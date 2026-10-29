@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
  * Crea el administrador inicial cuando la aplicación termina de arrancar.
  * La BD H2 vive en memoria y se vacía en cada ejecución, así que sin esto
  * no habría ningún administrador para entrar al módulo de personal.
+ *
+ * <p>La contraseña se guarda con hash (igual que al registrar un empleado desde
+ * la interfaz), porque {@link ServicioAutenticacion} compara contra el hash.</p>
  */
 @Component
 public class InicializadorAdministrador implements ApplicationRunner {
@@ -22,7 +25,8 @@ public class InicializadorAdministrador implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         if (!empleadoRepository.existsByUsuario("admin")) {
             empleadoRepository.save(new Empleado(
-                "Administrador General", "admin", "Admin123!", "Administrador"));
+                "Administrador General", "admin",
+                UtilidadPassword.encriptar("Admin123!"), "Administrador"));
         }
     }
 }

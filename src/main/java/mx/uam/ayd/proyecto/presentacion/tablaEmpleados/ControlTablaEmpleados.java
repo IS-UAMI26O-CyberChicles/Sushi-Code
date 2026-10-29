@@ -413,7 +413,7 @@ public class ControlTablaEmpleados {
             stage.setMinWidth(900);
             stage.setMinHeight(560);
             // Al cerrar la ventana (X o botón 🚪) se cierra la sesión de administrador
-            stage.setOnHidden(e -> servicioAutenticacion.cerrarSesion());
+            stage.setOnHidden(e -> servicioAutenticacion.cerrarSesionAdministrador());
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

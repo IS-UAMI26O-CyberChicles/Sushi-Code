@@ -149,13 +149,18 @@ public class ControlLoginAdministrador {
         try {
             // 2. Llamamos al nuevo método general de autenticación (que programaremos en el siguiente paso)
             // Este método lanzará excepciones si la cuenta está bloqueada o ya tiene sesión activa.
-            String rol = servicioAutenticacion.loginEmpleado(usuario.trim(), contrasena);
-            
+            String usuarioLimpio = usuario.trim();
+            String rol = servicioAutenticacion.loginEmpleado(usuarioLimpio, contrasena);
+
+            // Este login es la puerta del módulo de personal: solo entra el administrador.
+            if (!ServicioAutenticacion.ROL_ADMIN.equalsIgnoreCase(rol)) {
+                servicioAutenticacion.cerrarSesion(usuarioLimpio); // no dejar su sesión abierta
+                lblMensaje.setText("No tienes permisos de administrador.");
+                txtContrasena.clear();
+                return;
+            }
+
             exito = true;
-            
-            // Aquí delegaremos la redirección a la Subtarea 3 basándonos en la variable "rol"
-            System.out.println("Acceso concedido. Redirigiendo a panel de: " + rol);
-            
             stage.close(); 
             
         } catch (IllegalArgumentException e) {

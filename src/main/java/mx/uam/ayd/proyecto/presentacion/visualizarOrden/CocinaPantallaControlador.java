@@ -284,14 +284,24 @@ public class CocinaPantallaControlador {
             if (detalles != null) {
                 for (DetallesPedido detalle : detalles) {
                     Platillo platillo = detalle.getPlatillo();
-                    if (platillo != null && platillo.getTipoArea() != null &&
-                            estacionActual.equalsIgnoreCase(platillo.getTipoArea())) {
+                    if (platillo != null && platillo.getTipoArea() != null) {
+                        
+                        // Validamos si pertenece a la estación activa (soporta Rollos y Rollos especiales para la estación ROLLOS)
+                        boolean perteneceEstacion = false;
+                        if ("ROLLOS".equalsIgnoreCase(estacionActual)) {
+                            perteneceEstacion = "Rollos".equalsIgnoreCase(platillo.getTipoArea()) || 
+                                                "Rollos especiales".equalsIgnoreCase(platillo.getTipoArea());
+                        } else {
+                            perteneceEstacion = estacionActual.equalsIgnoreCase(platillo.getTipoArea());
+                        }
 
-                        detallesEstacion.add(detalle);
+                        if (perteneceEstacion) {
+                            detallesEstacion.add(detalle);
 
-                        if (!detalle.isCompletado()) {
-                            platillosEnCola += detalle.getCantidad();
-                            faltanPlatillosEnEstaEstacion = true; 
+                            if (!detalle.isCompletado()) {
+                                platillosEnCola += detalle.getCantidad();
+                                faltanPlatillosEnEstaEstacion = true; 
+                            }
                         }
                     }
                 }
@@ -310,7 +320,14 @@ public class CocinaPantallaControlador {
                 if (detallesComp != null) {
                     boolean perteneceAEstacion = detallesComp.stream()
                             .filter(d -> d.getPlatillo() != null && d.getPlatillo().getTipoArea() != null)
-                            .anyMatch(d -> estacionActual.equalsIgnoreCase(d.getPlatillo().getTipoArea()));
+                            .anyMatch(d -> {
+                                if ("ROLLOS".equalsIgnoreCase(estacionActual)) {
+                                    return "Rollos".equalsIgnoreCase(d.getPlatillo().getTipoArea()) || 
+                                           "Rollos especiales".equalsIgnoreCase(d.getPlatillo().getTipoArea());
+                                } else {
+                                    return estacionActual.equalsIgnoreCase(d.getPlatillo().getTipoArea());
+                                }
+                            });
                     if (perteneceAEstacion) {
                         pedidosTerminadosDeEstaEstacion++;
                     }

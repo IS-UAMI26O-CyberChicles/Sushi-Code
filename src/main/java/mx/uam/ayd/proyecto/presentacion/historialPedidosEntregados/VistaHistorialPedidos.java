@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -78,4 +79,21 @@ public class VistaHistorialPedidos {
 
         stage.show();
     }
+
+	/**
+	 * La vista cierra la pantalla
+	 */
+	public void cierra(){
+		stage.close();
+	}
+
+	// On Action's
+	/**
+	 * La acción que se tomará al presionar el botón "Volver a Menú Principal"
+	 */
+	@FXML
+	public void onActionVolver(){
+		System.out.println("Se presionó botón Volver a Menú Principal");
+		control.irRegistroPedido();
+	}
 }

@@ -1,0 +1,130 @@
+/* ----------- BOTONES ----------- */
+.boton-gris{
+    -fx-background-color: #363636;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    background-color: #363636;
+    border-radius: 6px;
+}
+.boton-gris:hover{
+    -fx-background-color: #1f1f1f;
+    background-color: #1f1f1f;
+}
+.texto-boton-gris{
+    -fx-text-fill: white;
+}
+
+.boton-rosa{
+    -fx-background-color: #ff9999;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+}
+.boton-rosa:hover{
+    -fx-background-color: #ff9999be;
+}
+.texto-boton-rosa{
+    -fx-text-fill: #b21a1a;
+}
+
+/* ----------- TEXTOS ----------- */
+.texto-rosa{
+    -fx-text-fill: #ff9999;
+    -fx-font-size: 11px;
+    -fx-background-color: #ff999945;
+    -fx-padding: 2 3 2 3;
+    -fx-background-radius: 2px;
+    -fx-font-weight: bold;
+}
+.texto-gris{ /* El texto rosa cambia a este cuando no está enfocado */
+    -fx-text-fill: #d3abab;
+    -fx-background-color: transparent;
+    -fx-font-size: 11px;
+    -fx-padding: 2 3 2 3;
+}
+
+/* ----------- ESTILOS DE ITEMS ----------- */
+.plantilla-pedido{
+    -fx-background-color: #2b2b2b;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-width: 0 0 0 5;
+    background-color: #2b2b2b;
+    border-radius: 6px;
+    border-width: 0 0 0 5;
+}
+.plantilla-pedido:hover{
+    -fx-border-color: #363636;
+}
+.plantilla-pedido:selected{
+    -fx-border-color: #ff9999;
+}
+.plantilla-pedido:selected:hover{
+    -fx-background-color: #363636;
+}
+.texto-tipo-pedido-local{
+    -fx-background-color: #002814;
+    -fx-text-fill: #05944f;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 3px;
+    -fx-padding: 2 3 2 3;
+}
+.texto-tipo-pedido-domicilio{
+    -fx-background-color: #292500;
+    -fx-text-fill: #b6aa1e;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 3px;
+    -fx-padding: 2 3 2 3;
+    background-color: #292500;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 2 3 2 3;
+}
+.texto-tipo-pedido-recoger{
+    -fx-background-color: #34332e;
+    -fx-text-fill: #9b9a8a;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-radius: 3px;
+    -fx-padding: 2 3 2 3;
+    background-color: #34332e;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 2 3 2 3;
+}
+/* platillo no modificado */
+.plantilla-platillo-nomodificado{
+    -fx-background-color: #2b2b2b;
+    -fx-background-radius: 6px;
+}
+/* platillo modificado */
+.plantilla-platillo-modificado{
+    -fx-background-color: #363636;
+    -fx-background-radius: 6px;
+}
+
+/* ----------- OBJETOS ----------- */
+/* Cambia el fondo del ScrollPane y de su contenedor interno (viewport) */
+.scroll-pane, .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    background-color: transparent;
+}
+/* Cambia el color del borde */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent; 
+    background-color: transparent;
+    border-color: transparent; 
+}
+
+/* Modifica la caja contenedora del CheckBox */
+.check-box .box {
+    -fx-background-color: #363636; /* Color de fondo de la caja (Azul) */
+    -fx-border-color: transparent;     /* Color del borde de la caja (Azul Oscuro) */
+    -fx-border-width: 0;       /* Grosor del borde */
+}
+.check-box:selected .mark {
+    -fx-background-color: #ff9999; /* Color de fondo de la caja (Azul) */
+    -fx-background-color: #b21a1a; /* Color de la palomita (Blanco) */
+}

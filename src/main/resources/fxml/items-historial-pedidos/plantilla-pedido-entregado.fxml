@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ToggleButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="plantilla-pedido" stylesheets="@../../styles/estilos-historial-pedidos.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <graphic>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+         <children>
+            <HBox maxWidth="1.7976931348623157E308" spacing="5.0">
+               <children>
+                  <Label text="#XXXX" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="texto-rosa" text="Mesa X">
+                     <font>
+                        <Font name="System Bold" size="11.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="texto-tipo-pedido-local" text="Tipo Pedido" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Label layoutX="10.0" layoutY="10.0" text="\$XXX.XX" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox maxWidth="1.7976931348623157E308">
+               <children>
+                  <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <Label text="X artículos" textFill="#d3abab">
+                     <font>
+                        <Font name="System Bold" size="11.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </HBox>
+            <VBox fillWidth="false" maxWidth="1.7976931348623157E308" spacing="5.0">
+               <children>
+                  <VBox maxWidth="1.7976931348623157E308" style="-fx-background-color: #2b2b2b;">
+                     <children>
+                        <Label text="Platillos Entregados:" textFill="#d3abab">
+                           <font>
+                              <Font name="System Bold" size="11.0" />
+                           </font>
+                        </Label>
+                        <VBox fx:id="contenedorPlatillos" maxWidth="1.7976931348623157E308" />
+                     </children>
+                  </VBox>
+                  <HBox alignment="CENTER_LEFT" spacing="3.0" style="-fx-background-color: #ff9999; -fx-background-radius: 3;">
+                     <children>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../img/icons/sync_problem_B21A1A.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Reelaboración Abierta" textFill="#b21a1a">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+            <Label text="Platillo 1, platillo 2" textFill="#d3abab">
+               <font>
+                  <Font name="System Bold" size="11.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </graphic>
+</ToggleButton>

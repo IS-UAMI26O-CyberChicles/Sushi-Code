@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import mx.uam.ayd.proyecto.negocio.ServicioPedido;
@@ -51,6 +52,7 @@ public class ControlRegistroPedido {
     @Autowired
     private ControlMesa controlMesa;
     @Autowired
+    @Lazy // Se hace para evitar problemas al regresar a esta pantalla desde ese control
     private ControlHistorialPedidos controlHistorialPedidos; // Se tiene contacto para pasar a la HU de la que se encarga
 
     // Inyectamos la nueva ventana de Armado de Orden
@@ -286,6 +288,7 @@ public class ControlRegistroPedido {
      * @author JLCB
      */
     public void onActionBtnHistorial(){
+        System.out.println("Se presionó botón para ir a Historial");
         controlHistorialPedidos.inicia(); // Iniciamos al nuevo contro
         cerrarVentana(); // Cerramos a este control
     }

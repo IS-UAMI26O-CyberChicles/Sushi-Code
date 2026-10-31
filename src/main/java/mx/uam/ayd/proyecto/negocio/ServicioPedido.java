@@ -334,4 +334,14 @@ public class ServicioPedido {
         return pedidoRepository.save(pedido) != null;
     }
 
+    /**
+     * Función que regresa a todos los pedidos cuyo estado se encuentra en "Entregado"
+     * @return Regresa una lista con los pedidos con estado "Entregado"
+     */
+    @Transactional(readOnly = true)
+    public List<Pedido> recuperaPedidosEntregados() {
+        List<Pedido> pedidosEntregados = pedidoRepository.findByEstado("Entregado");
+        
+        return pedidosEntregados;
+    }
 }

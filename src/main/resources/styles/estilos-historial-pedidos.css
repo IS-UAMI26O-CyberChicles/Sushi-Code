@@ -48,18 +48,22 @@
     -fx-background-radius: 6px;
     -fx-border-radius: 6px;
     -fx-border-width: 0 0 0 5;
+    -fx-border-color: transparent;
     background-color: #2b2b2b;
     border-radius: 6px;
     border-width: 0 0 0 5;
 }
 .plantilla-pedido:hover{
     -fx-border-color: #363636;
+    border-color: #363636;
 }
 .plantilla-pedido:selected{
     -fx-border-color: #ff9999;
+    border-color: #ff9999;
 }
 .plantilla-pedido:selected:hover{
     -fx-background-color: #363636;
+    background-color: #363636;
 }
 .texto-tipo-pedido-local{
     -fx-background-color: #002814;
@@ -68,6 +72,10 @@
     -fx-font-size: 11px;
     -fx-background-radius: 3px;
     -fx-padding: 2 3 2 3;
+    background-color: #002814;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 2 3 2 3;
 }
 .texto-tipo-pedido-domicilio{
     -fx-background-color: #292500;
@@ -97,11 +105,13 @@
 .plantilla-platillo-nomodificado{
     -fx-background-color: #2b2b2b;
     -fx-background-radius: 6px;
+    background-color: #2b2b2b;
 }
 /* platillo modificado */
 .plantilla-platillo-modificado{
     -fx-background-color: #363636;
     -fx-background-radius: 6px;
+    background-color: #363636;
 }
 
 /* ----------- OBJETOS ----------- */

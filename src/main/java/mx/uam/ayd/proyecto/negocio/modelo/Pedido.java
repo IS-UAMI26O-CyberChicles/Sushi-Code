@@ -40,7 +40,7 @@ public class Pedido {
     // --- RELACIONES DEL MODELO DE DOMINIO ---
 
    // 1 Pedido CONTIENE muchos DetallesPedido 
-    @OneToMany(targetEntity = DetallesPedido.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = DetallesPedido.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pedido")
     private List<DetallesPedido> detallesPedido = new ArrayList<>();
 
@@ -154,10 +154,10 @@ public class Pedido {
         this.costoEnvio = costoEnvio;
     }
     // Número de mesa
-    public int getNumMesa(){
+    public Integer getNumMesa(){
         return this.numMesa;
     }
-    public void setNumMesa(int num){
+    public void setNumMesa(Integer num){
         this.numMesa = num;
     }
 

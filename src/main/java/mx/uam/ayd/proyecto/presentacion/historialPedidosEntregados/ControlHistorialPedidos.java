@@ -1,9 +1,13 @@
 package mx.uam.ayd.proyecto.presentacion.historialPedidosEntregados;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
+import mx.uam.ayd.proyecto.negocio.ServicioPedido;
+import mx.uam.ayd.proyecto.negocio.modelo.Pedido;
 import mx.uam.ayd.proyecto.presentacion.registrarPedido.ControlRegistroPedido;
 
 /**
@@ -16,11 +20,14 @@ public class ControlHistorialPedidos {
     private final VistaHistorialPedidos vista;
     // Se declara los controles a los que se puede comunicar
     private final ControlRegistroPedido controlRegistroPedido;
+    // Se declaran los servicios a los que se comunicará
+    private final ServicioPedido servicioPedido;
 
     @Autowired
-    public ControlHistorialPedidos(VistaHistorialPedidos vista, ControlRegistroPedido controlRegistroPedido){
+    public ControlHistorialPedidos(VistaHistorialPedidos vista, ControlRegistroPedido controlRegistroPedido, ServicioPedido servicioPedido){
         this.vista = vista;
         this.controlRegistroPedido = controlRegistroPedido;
+        this.servicioPedido = servicioPedido;
     }
 
     /**
@@ -37,7 +44,8 @@ public class ControlHistorialPedidos {
      * @author JLCB
     */
     public void inicia(){
-        vista.muestra();
+        List<Pedido> pedidosEntregados = servicioPedido.recuperaPedidosEntregados();
+        vista.muestra(pedidosEntregados);
     }
 
     /**

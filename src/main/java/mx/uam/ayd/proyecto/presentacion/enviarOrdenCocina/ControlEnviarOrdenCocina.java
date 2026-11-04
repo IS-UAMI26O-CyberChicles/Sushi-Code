@@ -302,6 +302,8 @@ public class ControlEnviarOrdenCocina {
                     pedidoActual.agregarCobro(cobro);
                 }
                 // Si rbPendiente está seleccionado, la lista de cobros queda vacía y esPagado() devolverá false
+                // Persiste el cobro en la BD en cascada
+                servicioPedido.guardarPedido(pedidoActual);
             }
 
             boolean exito = servicioPedido.procesarEnvioCocina(idPedidoActual , costo);

@@ -165,12 +165,17 @@ public class ServicioPedido {
         // LISTAS PARA SEPARAR LOS PLATILLOS SEGUN EL AREA 
         List<DetallesPedido> paraPlancha = new ArrayList<>();
         List<DetallesPedido> paraRollos = new ArrayList<>();
-        // RN-04: DIVIDE LA ORDEN POR AREA 
+        // Variables para calcular el total
+        int totalCalculado = 0;
+
+        // RN-04: DIVIDE LA ORDEN POR AREA Y CALCULA EL TOTAL
         if (detalles != null) {
             for (DetallesPedido detalle : detalles) {
                 if (detalle.getPlatillo() != null) {
+                    // Sumar al total: cantidad * precio
+                    totalCalculado += detalle.getCantidad() * detalle.getPlatillo().getPrecio();
+
                     String area = detalle.getPlatillo().getTipoArea();
-                    
                     if ("Plancha".equalsIgnoreCase(area)) {
                         paraPlancha.add(detalle);
                     } else if ("Rollos".equalsIgnoreCase(area)) {
@@ -179,17 +184,21 @@ public class ServicioPedido {
                 }
             }
         }
+        
+        // Sumamos el costo de envío al total
+        totalCalculado += costoEnvio;
+
         // ENVIO DE LAS LISTAS FILTRADAS 
         enviarAPlancha(paraPlancha);
         enviarARollos(paraRollos);
-        //ACTUALIZA EL ESTADO
+        
+        // ACTUALIZA EL ESTADO, EL COSTO DE ENVÍO Y EL TOTAL DEFINITIVO
         pedido.setEstado("En Preparación");
-        pedidoRepository.save(pedido);
-
-        // NUEVO GUARDA EL COSTO DE ENVIO
         pedido.setCostoEnvio(costoEnvio);
+        pedido.setTotal(totalCalculado); // ¡AQUÍ GUARDAMOS EL TOTAL EN LA BD!
         
         pedidoRepository.save(pedido);
+        
         return true; 
     }
     // SIMULA EL ENVIO DE PLATILLOS A PLANCHA 
@@ -332,6 +341,26 @@ public class ServicioPedido {
 
         pedido.setDetallesPedido(detallesActualzados);
         return pedidoRepository.save(pedido) != null;
+    }
+
+    
+    // HU-13: Recupera los pedidos de tipo "Domicilio" que la cocina ya marcó como "Completado"
+     
+    @Transactional(readOnly = true)
+    public List<Pedido> obtenerPedidosAEntregar() {
+        return pedidoRepository.findByTipoOrdenAndEstado("Domicilio", "Completado");
+    }
+
+    
+    // HU-13: Sobrecarga para marcar como entregado por ID 
+    
+    @Transactional
+    public boolean marcarComoEntregado(long idPedido) {
+        Optional<Pedido> optPedido = pedidoRepository.findById(idPedido);
+        if (optPedido.isPresent()) {
+            return marcarComoEntregado(optPedido.get());
+        }
+        return false;
     }
 
 }

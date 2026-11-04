@@ -40,12 +40,12 @@ public class Pedido {
     // --- RELACIONES DEL MODELO DE DOMINIO ---
 
    // 1 Pedido CONTIENE muchos DetallesPedido 
-    @OneToMany(targetEntity = DetallesPedido.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = DetallesPedido.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pedido")
     private List<DetallesPedido> detallesPedido = new ArrayList<>();
 
     // 1 Pedido TIENE muchos Cobros
-    @OneToMany(targetEntity = Cobro.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = Cobro.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_pedido")
     private final List<Cobro> cobros = new ArrayList<>();
 

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane alignment="CENTER" style="-fx-background-color: #0D0809; -fx-padding: 15;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControlMisEntregas">
+<StackPane alignment="CENTER" style="-fx-background-color: #0D0809; -fx-padding: 15;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mx.uam.ayd.proyecto.presentacion.entregaDomicilio.VistaEntregaDomicilio">
    <children>
       <!-- Carcasa del Celular Compacta (300px x 600px) -->
       <VBox maxHeight="600.0" maxWidth="300.0" minHeight="600.0" minWidth="300.0" prefHeight="600.0" prefWidth="300.0" style="-fx-background-color: #160E10; -fx-background-radius: 32; -fx-border-color: #4A4D57; -fx-border-radius: 32; -fx-border-width: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 18, 0, 0, 6);">
@@ -70,7 +70,7 @@
                </content>
             </ScrollPane>
 
-            <!-- 6. Bloque Inferior Redondeado (Curvatura Interna Ajustada a 27px) -->
+            <!-- 6. Bloque Inferior Redondeado -->
             <VBox style="-fx-background-color: #1F1315; -fx-background-radius: 0 0 27 27; -fx-border-color: #352024; -fx-border-width: 1 0 0 0; -fx-border-radius: 0 0 27 27;">
                <children>
                   <!-- Menú de Navegación -->

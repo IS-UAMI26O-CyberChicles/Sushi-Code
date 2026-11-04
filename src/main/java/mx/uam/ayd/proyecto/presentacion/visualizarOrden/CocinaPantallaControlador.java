@@ -29,6 +29,7 @@ import mx.uam.ayd.proyecto.negocio.ServicioPedido;
 import mx.uam.ayd.proyecto.negocio.modelo.DetallesPedido;
 import mx.uam.ayd.proyecto.negocio.modelo.Pedido;
 import mx.uam.ayd.proyecto.negocio.modelo.Platillo;
+import mx.uam.ayd.proyecto.presentacion.entregaDomicilio.ControlEntregaDomicilio;
 
 /**
  * CocinaPantallaControlador: El corazón visual de la cocina.
@@ -84,6 +85,10 @@ public class CocinaPantallaControlador {
     @Autowired
     @Lazy
     private ControlVisualizarOrden controlVisualizarOrden;
+
+    // (HU-13): Controlador de Entregas a Domicilio
+    @Autowired
+    private ControlEntregaDomicilio controlEntregaDomicilio;
 
     /**
      * MÉTODO DE INICIALIZACIÓN:
@@ -239,6 +244,8 @@ public class CocinaPantallaControlador {
                     if (controlVisualizarOrden != null) {
                         controlVisualizarOrden.cargarPedidosPendientes();
                     }
+                    // (HU-13): Si el pedido es de tipo "Domicilio", abrimos la ventana de control de entrega
+                    controlEntregaDomicilio.inicia();
                 } else {
                     LOGGER.warning(
                             () -> "No se encontró ningún pedido pendiente con el número de orden: " + numeroOrden);
@@ -288,13 +295,18 @@ public class CocinaPantallaControlador {
                 // ninguna estación
                 if (todoElPedidoEstaListo) {
                     pedido.setEstado("Completado");
-                }
-
+                
+            }
                 // 3. Al guardar el pedido, Hibernate detecta los DetallesPedido modificados
                 // y los actualiza gracias al CascadeType.ALL
                 servicioPedido.guardarPedido(pedido);
 
-                // 4. Actualizamos la interfaz SIEMPRE (lo sacamos del
+                // 4. DESPUÉS de asegurar el guardado, si estaba listo y es a Domicilio, abrimos el celular
+                if (todoElPedidoEstaListo && "Domicilio".equalsIgnoreCase(pedido.getTipoOrden())) {
+                    controlEntregaDomicilio.inicia();
+                }
+
+                // 5. Actualizamos la interfaz SIEMPRE (lo sacamos del
                 // 'if(todoElPedidoEstaListo)')
                 // para que los contadores visuales se sincronicen de inmediato en todas las
                 // pantallas

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxWidth="1.7976931348623157E308" prefWidth="270.0" spacing="8.0" style="-fx-background-color: #221417; -fx-background-radius: 12; -fx-border-color: #352024; -fx-border-radius: 12; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mx.uam.ayd.proyecto.presentacion.misEntregas.ControlItemTarjetaEntrega">
+<VBox maxWidth="1.7976931348623157E308" prefWidth="270.0" spacing="8.0" style="-fx-background-color: #221417; -fx-background-radius: 12; -fx-border-color: #352024; -fx-border-radius: 12; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mx.uam.ayd.proyecto.presentacion.entregaDomicilio.ControlItemTarjetaEntrega">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
@@ -63,13 +63,13 @@
                 <Label text="TOTAL A COBRAR: " textFill="WHITE">
                     <font><Font name="System Bold" size="11.0" /></font>
                 </Label>
-                <Label fx:id="lblTotalCobrar" text="$450.00" textFill="#E53935">
+                <Label fx:id="lblTotalCobrar" text="450.00" textFill="#E53935">
                     <font><Font name="System Bold" size="12.0" /></font>
                 </Label>
             </children>
         </HBox>
 
         <!-- Botón Táctil de Cierre Operativo -->
-        <Button fx:id="btnMarcarEntregado" maxWidth="1.7976931348623157E308" prefHeight="36.0" style="-fx-background-color: #E53935; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-background-radius: 6; -fx-cursor: hand;" text="✓  MARCAR COMO ENTREGADO" />
+        <Button fx:id="btnMarcarEntregado" maxWidth="1.7976931348623157E308" onAction="#clicMarcarEntregado" prefHeight="36.0" style="-fx-background-color: #E53935; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-background-radius: 6; -fx-cursor: hand;" text="✓  MARCAR COMO ENTREGADO" />
     </children>
 </VBox>

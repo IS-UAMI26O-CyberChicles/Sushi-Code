@@ -298,5 +298,47 @@ class ServicioPedidoTest {
         assertTrue(servicioPedido.asignarDetallesAPedido(p, detalles));
     }
 
-}
 
+
+// -----------------------PRUEBAS HU-13: MIS ENTREGAS-----------------------------------
+
+// CUANDO HAY PEDIDOS A ENTREGAR, DEBE REGRESAR LA LISTA DE PEDIDOS
+@Test
+    void testObtenerPedidosAEntregar_Exitoso() {
+        // PREPARA EL ESCENARIO SIMULANDO UN PEDIDO A DOMICILIO COMPLETADO
+        Pedido pedidoDomicilio = new Pedido();
+        pedidoDomicilio.setIdPedido(10L);
+        pedidoDomicilio.setTipoOrden("Domicilio");
+        pedidoDomicilio.setEstado("Completado");
+
+        List<Pedido> listaSimulada = new ArrayList<>();
+        listaSimulada.add(pedidoDomicilio);
+
+        when(pedidoRepository.findByTipoOrdenAndEstado("Domicilio", "Completado")).thenReturn(listaSimulada);
+
+        // EJECUTA EL MÉTODO A PROBAR
+        List<Pedido> resultado = servicioPedido.obtenerPedidosAEntregar();
+
+        // VERIFICA QUE EL RESULTADO SEA EL ESPERADO
+        assertNotNull(resultado, "La lista de pedidos no debe ser nula");
+        assertEquals(1, resultado.size(), "Debe retornar exactamente 1 pedido a entregar");
+        assertEquals("Completado", resultado.get(0).getEstado());
+        assertEquals("Domicilio", resultado.get(0).getTipoOrden());
+        verify(pedidoRepository, times(1)).findByTipoOrdenAndEstado("Domicilio", "Completado");
+    }
+    
+    // CUANDO NO HAY PEDIDOS A ENTREGAR, DEBE REGRESAR UNA LISTA VACÍA
+    @Test
+    void testObtenerPedidosAEntregar_ListaVacia() {
+        // PREPARA EL ESCENARIO SIMULANDO QUE NO HAY PEDIDOS A DOMICILIO COMPLETADOS
+        when(pedidoRepository.findByTipoOrdenAndEstado("Domicilio", "Completado")).thenReturn(new ArrayList<>());
+
+        // EJECUTA EL MÉTODO A PROBAR
+        List<Pedido> resultado = servicioPedido.obtenerPedidosAEntregar();
+
+        // VERIFICA QUE EL RESULTADO SEA UNA LISTA VACÍA
+        assertNotNull(resultado, "No debe regresar null si no hay pedidos pendientes");
+        assertTrue(resultado.isEmpty(), "La lista debe estar vacía si no hay pedidos a domicilio completados");
+        verify(pedidoRepository, times(1)).findByTipoOrdenAndEstado("Domicilio", "Completado");
+    }
+}

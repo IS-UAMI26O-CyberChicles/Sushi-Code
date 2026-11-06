@@ -21,6 +21,7 @@ public class ControlEntregaDomicilio {
     @Autowired
     private ApplicationContext context;
 
+    // inicia y refresca la vista de entrega a domicilio
     public void inicia() {
         // 1. Primero abrimos la vista para que inicialice sus componentes FXML
         vista.muestra(this);
@@ -32,18 +33,21 @@ public class ControlEntregaDomicilio {
         List<Pedido> pedidos = servicioPedido.obtenerPedidosAEntregar();
         vista.actualizarContador(pedidos.size());
 
-        // 4. Cargamos cada tarjeta con la ruta EXACTA de tu FXML
+        // 4. Cargamos cada tarjeta con los datos del pedido correspondiente
         for (Pedido pedido : pedidos) {
             try {
                 System.out.println("--- Intentando crear tarjeta para orden: " + pedido.getNumeroOrden());
                 
+                // Cargamos el archivo FXML de la tarjeta de entrega
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Item-Tarjeta-Entrega.fxml"));
                 loader.setControllerFactory(context::getBean);
                 Node tarjetaNode = loader.load();
-
+                
+                // Inyectamos los datos del pedido en el controlador de la tarjeta
                 ControlItemTarjetaEntrega itemControl = loader.getController();
                 itemControl.setDatos(pedido, this); 
-
+                
+                // Agregamos la tarjeta al contenedor visual en la vista
                 vista.agregarTarjeta(tarjetaNode);
                 
                 System.out.println("--- Tarjeta agregada al contenedor visual con éxito");
@@ -54,14 +58,15 @@ public class ControlEntregaDomicilio {
         }
     }
 
+    // Actualiza el estado del pedido a "Entregado" y refresca la vista
     public void marcarPedidoComoEntregado(Pedido pedido) {
         try {
             pedido.setEstado("Entregado");
             servicioPedido.guardarPedido(pedido);
+            // recargamos la pantalla para remover la tarjeta del pedido entregado
             inicia();
         } catch (Exception e) {
             System.err.println("Error al marcar pedido como entregado: " + e.getMessage());
-        }
-     
+        }  
 }
 }

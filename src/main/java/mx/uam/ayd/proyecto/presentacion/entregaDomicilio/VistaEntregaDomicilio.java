@@ -27,11 +27,11 @@ public class VistaEntregaDomicilio {
 
     private Stage stage;
 
+    // Metodo para mostrar la ventana de entregas y establecer el controlador
     public void muestra(ControlEntregaDomicilio control) {
         if (stage == null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Ventana-movil.fxml"));
-                
                 loader.setControllerFactory(type -> {
                     if (type == VistaEntregaDomicilio.class) {
                         return this;
@@ -53,18 +53,19 @@ public class VistaEntregaDomicilio {
         stage.toFront();
     }
 
-    // --- ESTOS SON LOS 3 MÉTODOS QUE VS CODE ESTÁ BUSCANDO ---
-
+    // Metodo para limpiar el contenedor visual de tarjetas de entrega
     public void limpiarContenedor() {
         if (vboxContenedorEntregas != null) {
             vboxContenedorEntregas.getChildren().clear();
         }
     }
-
+    
+    // Metodo para agregar una tarjeta de entrega al contenedor visual
     public void agregarTarjeta(Node tarjetaNode) {
         vboxContenedorEntregas.getChildren().add(tarjetaNode);
     }
-
+    
+    // Metodo para actualizar el texto del contador visual de pedidos pendientes
     public void actualizarContador(int totalPendientes) {
         if (lblPendientes != null) {
             lblPendientes.setText("(" + totalPendientes + " Pendientes)");

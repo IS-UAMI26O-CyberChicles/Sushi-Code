@@ -17,30 +17,27 @@ import mx.uam.ayd.proyecto.negocio.modelo.Pedido;
 @Scope("prototype")
 public class ControlItemTarjetaEntrega {
 
+    // componentes de la vista FXML
     @FXML
     private Label lblNumeroOrden;
-
     @FXML
     private Label lblHora;
-
     @FXML
     private Label lblCliente;
-
     @FXML
     private Label lblTelefono;
-
     @FXML
     private Label lblDireccion;
-
     @FXML
     private Label lblTotalCobrar;
-
     @FXML
     private Button btnMarcarEntregado;
-
+    
+    // Referencias de control y modelo
     private ControlEntregaDomicilio controlPadre;
     private Pedido pedidoActual;
 
+    // Este metodo llena los datos de la tarjeta de entrega con la información del pedido y del cliente
     public void setDatos(Pedido pedido, ControlEntregaDomicilio controlPadre) {
         this.pedidoActual = pedido;
         this.controlPadre = controlPadre;
@@ -48,11 +45,11 @@ public class ControlItemTarjetaEntrega {
         // 1. Número de orden de la entidad Pedido
         lblNumeroOrden.setText("#" + pedido.getNumeroOrden());
         
-        // 2. Hora (Se genera al vuelo usando la hora actual del sistema)
+        // 2. genera y muestra la hora actual en formato de 24 hrs
         String horaActual = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
         lblHora.setText("🕒 " + horaActual);
 
-        // 3. Extracción segura de la relación @ManyToOne con Cliente
+        // 3. Muestra la información del cliente asociado al pedido, con manejo de posibles valores nulos
         Cliente cliente = pedido.getCliente();
         if (cliente != null) {
             lblCliente.setText(cliente.getNombre() != null ? cliente.getNombre() : "Sin Nombre");
@@ -64,11 +61,11 @@ public class ControlItemTarjetaEntrega {
             lblDireccion.setText("N/A");
         }
 
-        // 4. Cálculo del Total a cobrar (Manejo seguro del Lazy Loading de Hibernate)
+        // 4. Cálculo del Total a cobrar 
         double totalCalculado = pedido.getTotal();
         
         try {
-            // Intentamos calcular el total si viene en 0
+            // si el total es 0, intentamos calcularlo a partir de los detalles del pedido
             if (totalCalculado == 0 && pedido.getDetallesPedido() != null) {
                 for (DetallesPedido detalle : pedido.getDetallesPedido()) {
                     if (detalle.getPlatillo() != null) {
@@ -77,6 +74,7 @@ public class ControlItemTarjetaEntrega {
                 }
             }
         } catch (Exception e) {
+            // si los detalles no estan cargados en memoria (LazyInitialization), mostramos un aviso y usamos el costo de envío como total
             System.out.println("Aviso: No se pudieron calcular los detalles por LazyInitialization. Mostrando costo de envío o cero.");
             if (totalCalculado == 0) {
                 totalCalculado = pedido.getCostoEnvio();
@@ -85,23 +83,27 @@ public class ControlItemTarjetaEntrega {
         
         // Sumamos el costo de envío al total que obtuvimos arriba
         totalCalculado = totalCalculado + pedido.getCostoEnvio();
-
+       
+       //5. verificamos si el pedido está pagado y actualizamos la etiqueta de total a cobrar con el estilo correspondiente
        try {
             if (pedido.esPagado()) {
+                // Si el pedido está pagado, mostramos el total como "$0.00 (Pagado)" y aplicamos un estilo verde
                 lblTotalCobrar.setText("$0.00 (Pagado)");
                 lblTotalCobrar.setStyle("-fx-text-fill: #00FF00; -fx-font-weight: bold;"); 
             } else {
+                // Si el pedido no está pagado, mostramos el total calculado y aplicamos un estilo blanco
                 lblTotalCobrar.setText(String.format("$%.2f", totalCalculado));
                 lblTotalCobrar.setStyle("-fx-text-fill: white; -fx-font-weight: bold;"); 
             }
         } catch (Exception e) {
-            // Si Hibernate bloquea la lectura de los cobros, atrapamos el error y mostramos el total normal
+            // Si los cobros no se cargaron correctamente, mostramos un aviso y aplicamos un estilo blanco al total a cobrar
             System.out.println("Aviso: No se pudieron leer los cobros del pedido #" + pedido.getNumeroOrden());
             lblTotalCobrar.setText(String.format("$%.2f", totalCalculado));
             lblTotalCobrar.setStyle("-fx-text-fill: white; -fx-font-weight: bold;"); 
         }
     }
     
+    // Este metodo se llama cuando el usuario hace clic en el botón "Marcar como Entregado"
     @FXML
     private void clicMarcarEntregado() {
         if (controlPadre != null && pedidoActual != null) {
